@@ -35,7 +35,7 @@
 
 #### 7. Check a simple query:
 
-```
+``` graphql
 query getProductById{
   productByProdId(prodId:10){
     title
@@ -59,7 +59,7 @@ OUTPUT:
 ![ERD](https://user-images.githubusercontent.com/15609881/37252356-ad010bca-2517-11e8-9f9e-798ee789a034.png)
 
 #### 2. A GraphQL query which returns the attributes from a single database relation.
-```
+``` graphql
 query getProductAndCategory{
   ProductOne: productByProdId(prodId:10000){
     title,
@@ -93,9 +93,11 @@ OUTPUT:
 
 Simple example of a pre-defined funciton:
 
-``SELECT (price - (price * 0.21)) FROM postgraphile.products WHERE prod_id = 10000;``
-
+``` sql
+SELECT (price - (price * 0.21)) FROM postgraphile.products WHERE prod_id = 10000;
 ```
+
+``` graphql
 mutation sds{
   getPrice(input:{clientMutationId:""}){
     bigFloat
@@ -111,5 +113,110 @@ OUTPUT:
   }
 }
 ```
+#### 4. A GraphQL query which returns the attributes from 3 joined database relations having 2 levels of nesting in the resultant output Select all customers (first name, last name, country and income) for particular order from the orderline, specified by product.
 
+``` graphql
+query question3{
+  productByProdId(prodId:1000){
+    orderlinesByProdId(orderBy: PROD_ID_ASC){
+      totalCount
+      nodes{
+        orderByOrderid{
+          customerByCustomerid{
+            firstname,
+            lastname,
+            country,
+            income
+          }
+        }
+      }
+    }
+  }
+}
+
+OUTPUT:
+
+{
+  "data": {
+    "productByProdId": {
+      "orderlinesByProdId": {
+        "totalCount": 5,
+        "nodes": [
+          {
+            "orderByOrderid": {
+              "customerByCustomerid": {
+                "firstname": "UXLWZS",
+                "lastname": "KAHFIKAFKZ",
+                "country": "China",
+                "income": 60000
+              }
+            }
+          },
+          .
+          .
+          .
+```
+
+#### 5.A mutation to add a new order to the database. The mutation updates the orders, orderlines and cust_hist relations
+
+``` graphql
+mutation addOrderr($pOrder: OrderInput!, $pOrderLine: OrderlineInput!, $pCust_Hist: CustHistInput!){
+  createOrder(input: {clientMutationId:"",order: $pOrder}){
+    order{
+      orderid,
+      customerid,
+      orderdate
+    }
+  }
+  createOrderline(input:{clientMutationId:"",orderline: $pOrderLine}){
+    orderline{
+      orderid,
+      orderdate,
+      prodId,
+      orderdate
+    }
+  }
+  createCustHist(input:{clientMutationId:"",custHist:$pCust_Hist}){
+    custHist{
+      customerid,
+      orderid,
+      prodId,
+    }
+  }
+}
+
+OUTPUT:
+
+{
+  "data": {
+    "createOrder": {
+      "order": {
+        "orderid": 12015,
+        "customerid": 10000,
+        "orderdate": "2002-12-12"
+      }
+    },
+    "createOrderline": {
+      "orderline": {
+        "orderid": 12015,
+        "orderdate": "2002-12-12",
+        "prodId": 1000
+      }
+    },
+    "createCustHist": {
+      "custHist": {
+        "customerid": 10000,
+        "orderid": 12015,
+        "prodId": 1000
+      }
+    }
+  }
+}
+
+```
+
+## Node.js - GraphQL - Express - Sequelize
+### Manual implementation of the query from task 2 (above) directly using GraphQL and Express i.e. not using postgraphql. Sequelize is used to query Postgres as part of the resolver function.
+
+# WILL BE ADDED ON 12/03/2018
 
