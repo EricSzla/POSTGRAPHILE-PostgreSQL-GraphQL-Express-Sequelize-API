@@ -221,3 +221,50 @@ OUTPUT:
 To start the program, navigate to the root directory and execute the following: 
 ```node server.js``` 
 
+Then navigate to ```http://localhost:3000/graphAPI``` and execute the following:
+
+``` graphql
+{ 
+  products{
+    prod_id,
+    price,
+    actor,
+    special
+    category{
+      category,
+      categoryname
+    }
+  }
+}
+```
+
+The output should be as follow:
+
+``` graphql
+{
+  "data": {
+    "products": [
+      {
+        "prod_id": 1,
+        "price": 25.99,
+        "actor": "PENELOPE GUINESS",
+        "special": 0,
+        "category": {
+          "category": 14,
+          "categoryname": "Sci-Fi"
+        }
+      },
+      {
+        "prod_id": 2,
+        "price": 20.99,
+        "actor": "EWAN RICKMAN",
+        "special": 0,
+        "category": {
+          "category": 6,
+          "categoryname": "Documentary"
+        }
+      },
+      .
+      .
+      .
+```
