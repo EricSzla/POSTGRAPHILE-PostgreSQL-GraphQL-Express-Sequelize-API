@@ -218,5 +218,6 @@ OUTPUT:
 ## Node.js - GraphQL - Express - Sequelize
 ### Manual implementation of the query from task 2 (above) directly using GraphQL and Express i.e. not using postgraphql. Sequelize is used to query Postgres as part of the resolver function.
 
-# WILL BE ADDED ON 12/03/2018
+To start the program, navigate to the root directory and execute the following: 
+```node server.js``` 
 
